@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "186245689237",
+    "project_id": "aaroygay",
+    "storage_bucket": "aaroygay.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186245689237:android:e234e17389bcb51fa5109c",
+        "android_client_info": {
+          "package_name": "np.com.deepndra.aarogya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186245689237-dsc1bt73stdsdhms7pu1vfu15mfrctab.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzm2wGtjwaHQQP5X30T2nf3m-bZcizP-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186245689237-dsc1bt73stdsdhms7pu1vfu15mfrctab.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,7 @@
 import 'package:aarogya/page/addDoctor.dart';
 import 'package:aarogya/page/addPatientform.dart';
 import 'package:aarogya/page/addReport.dart';
+import 'package:aarogya/page/patientsList.dart';
 import 'package:flutter/material.dart';
 import 'package:unicorndial/unicorndial.dart';
 
@@ -58,6 +59,21 @@ class _HomePageState extends State<HomePage> {
           mini: true,
           onPressed: () {
             Navigator.of(context).pushNamed(AddReport.routeName);
+          },
+        ),
+      ),
+      UnicornButton(
+        hasLabel: true,
+        labelText: "View Patients",
+        labelBackgroundColor: Colors.black,
+        labelColor: Colors.white,
+        currentButton: FloatingActionButton(
+          child: Icon(Icons.receipt),
+          backgroundColor: Colors.green,
+          heroTag: "patientlist",
+          mini: true,
+          onPressed: () {
+            Navigator.of(context).pushNamed(PatientList.routeName);
           },
         ),
       ),

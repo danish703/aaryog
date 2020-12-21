@@ -1,5 +1,6 @@
+import 'package:aarogya/page/patientDetails.dart';
+import 'package:aarogya/services/firebaseservice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class PatientList extends StatefulWidget {
@@ -9,11 +10,7 @@ class PatientList extends StatefulWidget {
 }
 
 class _PatientListState extends State<PatientList> {
-  @override
-  void initState() {
-    Firebase.initializeApp();
-    super.initState();
-  }
+  FireStoreServices _fireStoreServices = new FireStoreServices();
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +19,7 @@ class _PatientListState extends State<PatientList> {
         title: Text("Patient List"),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('patient').snapshots(),
+        stream: _fireStoreServices.getAllPatient(),
         builder:
             (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshots) {
           if (!snapshots.hasData) {
@@ -37,6 +34,10 @@ class _PatientListState extends State<PatientList> {
               return ListTile(
                 title: Text(d['firstName'] + " " + d['lastName']),
                 subtitle: Text(d['dob']),
+                onTap: () {
+                  Navigator.of(context)
+                      .pushNamed(PatientDetails.routeName, arguments: d.id);
+                },
               );
             }).toList(),
           );

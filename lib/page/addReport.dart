@@ -1,8 +1,6 @@
-import 'dart:ffi';
 import 'dart:io';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:aarogya/services/firebaseservice.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,9 +12,10 @@ class AddReport extends StatefulWidget {
 }
 
 class _AddReportState extends State<AddReport> {
+  FireStoreServices _fireStoreServices = new FireStoreServices();
   final picker = ImagePicker();
   File _file;
-  String _uploadUrl = "not upload yet";
+  String imageDownloadLink;
   Future<void> _pickImage(ImageSource source) async {
     final selectedImage = await picker.getImage(source: source);
     setState(() {
@@ -39,30 +38,6 @@ class _AddReportState extends State<AddReport> {
     });
   }
 
-  Future<UploadTask> uploadReport(File _image) async {
-    Firebase.initializeApp();
-    if (_image == null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("No file was selected")));
-    }
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child('report')
-        .child('/${DateTime.now()}' + '.jpg');
-    final metadata = SettableMetadata(
-        contentType: 'image/jpeg',
-        customMetadata: {'picked-file-path': _image.path});
-    UploadTask uploadTask = ref.putFile(File(_image.path), metadata);
-    return Future.value(uploadTask);
-  }
-
-  Future<Void> addReportRecord() {
-    uploadReport(_file).then((UploadTask task) {
-      print("................");
-      print(task.snapshot.ref.getDownloadURL());
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,43 +47,66 @@ class _AddReportState extends State<AddReport> {
             IconButton(
                 icon: Icon(Icons.save),
                 onPressed: () {
-                  addReportRecord();
-                })
+                  if (_file == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("No file was selected")));
+                  } else {
+                    String imageName = _fireStoreServices.uploadReport(_file);
+                    _fireStoreServices.downloadLink(imageName).then((value) {
+                      setState(() {
+                        imageDownloadLink = value;
+                      });
+                    });
+                  }
+                }),
           ],
         ),
-        body: Column(
-          children: [
-            Container(
-                child: Center(
-              child: _file == null
-                  ? Text("No image selected")
-                  : Image.file(
-                      _file,
-                      fit: BoxFit.cover,
-                    ),
-            )),
-            _file == null
-                ? Container(
-                    child: null,
-                  )
-                : Row(
-                    children: [
-                      FlatButton(
-                        child: Text("Crop"),
-                        onPressed: () {
-                          _cropImage();
-                        },
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Title",
+                    labelStyle: TextStyle(color: Colors.red),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2.0)),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green, width: 2.0),
+                    )),
+              ),
+              Container(
+                  child: Center(
+                child: _file == null
+                    ? Text("No image selected")
+                    : Image.file(
+                        _file,
+                        fit: BoxFit.cover,
                       ),
-                      FlatButton(
-                        child: Text("Clear"),
-                        onPressed: () {
-                          _clear();
-                        },
-                      )
-                    ],
-                  ),
-            Text(_uploadUrl)
-          ],
+              )),
+              _file == null
+                  ? Container(
+                      child: null,
+                    )
+                  : Row(
+                      children: [
+                        FlatButton(
+                          child: Text("Crop"),
+                          onPressed: () {
+                            _cropImage();
+                          },
+                        ),
+                        FlatButton(
+                          child: Text("Clear"),
+                          onPressed: () {
+                            _clear();
+                          },
+                        )
+                      ],
+                    ),
+              Text(imageDownloadLink == null ? "not set" : imageDownloadLink)
+            ],
+          ),
         ),
         bottomNavigationBar: BottomAppBar(
           child: Row(

@@ -3,6 +3,7 @@ import 'package:aarogya/page/addPatientform.dart';
 import 'package:aarogya/page/addReport.dart';
 import 'package:aarogya/page/doctordetails.dart';
 import 'package:aarogya/page/homePage.dart';
+import 'package:aarogya/page/patientDetails.dart';
 import 'package:aarogya/page/patientsList.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ void main() {
       AddDoctorForm.routeName: (ctx) => AddDoctorForm(),
       AddReport.routeName: (ctx) => AddReport(),
       PatientList.routeName: (ctx) => PatientList(),
+      PatientDetails.routeName: (ctx) => PatientDetails(),
     },
   ));
 }
